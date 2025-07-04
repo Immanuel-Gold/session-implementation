@@ -1,12 +1,14 @@
 import express from "express";
 import session from "express-session";
+import dotenv from "dotenv";
 import { verifyUser } from "./middleware/verify.js";
 
+dotenv.config();
 const app = express();
 
 app.use(
   session({
-    secret: "S3CRET_KEY",
+    secret: process.env.SECRET_KEY,
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -45,11 +47,9 @@ app.post(`/api/register`, (req, res) => {
   }
   // Push new user to Users Array
   users.push({ username, email, password });
-  req.session.user = { username, email, password };
 
-  console.log(req.session);
-  console.log(req.session.id);
-  console.log(req.session.user);
+
+
   return res.status(201).json({ username, email, password });
 });
 
@@ -71,9 +71,6 @@ app.post(`/api/login`, (req, res) => {
 
   req.session.user = { username, email, password };
 
-  console.log(req.session);
-  console.log(req.session.id);
-  console.log(req.session.user);
 
   return res.status(200).json(user);
 });
